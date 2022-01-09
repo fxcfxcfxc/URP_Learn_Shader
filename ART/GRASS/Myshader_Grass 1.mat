@@ -21,8 +21,8 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _range: 0.15
-    - _speed: 1.58
+    - _range: 0.14
+    - _speed: 1.49
     m_Colors:
-    - _BaseColor: {r: 0.6267278, g: 0.9137255, b: 0.2823529, a: 1}
+    - _BaseColor: {r: 0.42251945, g: 0.9056604, b: 0.33748665, a: 1}
   m_BuildTextureStacks: []
