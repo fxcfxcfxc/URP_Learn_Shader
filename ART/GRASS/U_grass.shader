@@ -3,8 +3,9 @@ Shader"Myshader/Grass"
     Properties
     {   
        _BaseColor("Base Color",Color)=(1,1,1,1)
-       _speed("速度",float)=1.0
-       _range("范围",float)=1.0
+       _speed("频率",float)=1.0
+       _range("摆动范围",float)=1.0
+       _WindGustDistance("摆动限制",float)=1.0
     }
     SubShader
     {
@@ -24,9 +25,13 @@ Shader"Myshader/Grass"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
             
+            CBUFFER_START(UnityPerMaterial)
             uniform half4  _BaseColor;
             uniform float _speed;
             uniform float _range;
+            uniform float _WindGustDistance;
+            CBUFFER_END
+            
             struct Attributes
             {
                 float4 vertex : POSITION;
@@ -50,7 +55,9 @@ Shader"Myshader/Grass"
                 v2f o;
                 o.vertexcolor = v.col;
                 o.posWS = TransformObjectToWorld(v.vertex.xyz);
-                v.vertex.x = v.vertex.x + sin(o.posWS.y + _Time.z * _speed) * v.col.r * _range;
+                o.posWS.x = o.posWS.x + sin(o.posWS.y * _WindGustDistance + _Time.z * _speed) * v.col.r * _range;
+                o.posWS.z = o.posWS.z + sin(o.posWS.y * _WindGustDistance + _Time.z * _speed) * v.col.r * _range;
+                v.vertex.xyz = TransformWorldToObject(o.posWS.xyz);//将修改的顶点位置坐标转换回模型空间坐标
                 o.posCS = TransformObjectToHClip(v.vertex.xyz);
                 o.uv0 = v.uv;
                 return o;

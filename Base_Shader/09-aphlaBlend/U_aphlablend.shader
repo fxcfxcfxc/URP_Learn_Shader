@@ -45,12 +45,15 @@ Shader"Myshader/U_aphlaTest"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
 
-
+            CBUFFER_START(UnityPerMaterial)
             uniform float4 _MainColor;
             uniform float  _smoothness;
             uniform float4 _SpecColor;
             uniform float _ambStrength;
             uniform float _AphlaPower;
+            CBUFFER_END
+            
+            
             TEXTURE2D(_MainTex);//纹理对象
             SAMPLER(sampler_MainTex);//采样器
 

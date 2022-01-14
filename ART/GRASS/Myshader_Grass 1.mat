@@ -21,8 +21,9 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _range: 0.14
-    - _speed: 1.49
+    - _WindGustDistance: 0.36
+    - _range: 0.27
+    - _speed: 0.84
     m_Colors:
-    - _BaseColor: {r: 0.42251945, g: 0.9056604, b: 0.33748665, a: 1}
+    - _BaseColor: {r: 0.72047126, g: 0.99215686, b: 0.46631375, a: 1}
   m_BuildTextureStacks: []
