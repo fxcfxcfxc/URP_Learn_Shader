@@ -6,6 +6,7 @@
         _mainColor("颜色",Color)=(1.0,1.0,1.0,1.0)
         _shadowCol("影子颜色",Color)=(0.7,0.7,0.8,1.0)
         _shadowRange("光影阈值",Range(0,1))=0.5
+        _shadowSmooth("光影过度",Range(0,0.03))=0.002
         _smoothness("高光范围",float)=20.0
         _MainTex("主要纹理颜色",2D)="white"{}
         
@@ -31,13 +32,15 @@
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
 
-
+         
             uniform float4 _mainColor;
             uniform float4 _shadowCol;
             uniform float  _smoothness;
             uniform float4 _specColor;
             uniform float _ambStrength;
             uniform float _shadowRange;
+            uniform float _shadowSmooth;
+            
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
             struct Attributes
@@ -78,12 +81,14 @@
                 //float3 specularCol = pow(ndoth,_smoothness)* lightCol * _SpecColor;//高光
 
                 float  half_lambert = max(0.0,dot(nDir,lDir))*0.5 +0.5;//lambert
-                float3 diffuse = half_lambert > _shadowRange ? _mainColor : _shadowCol;
+                float ramp = smoothstep(0, _shadowSmooth,half_lambert -_shadowRange);
+                float3 diffuse = lerp(_shadowCol, _mainColor, ramp);
+                //float3 diffuse = half_lambert > _shadowRange ? _mainColor : _shadowCol;
                 //float3  ambColor = UNITY_LIGHTMODEL_AMBIENT.rgb * _ambStrength;//abmient
 
                 float3 MainTexCol = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv0);
                
-                return float4(diffuse,1.0);
+                return float4(diffuse * MainTexCol,1.0);
             }
             ENDHLSL
         }
