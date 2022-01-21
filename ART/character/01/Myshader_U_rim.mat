@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Myshader_RenderFuture_outline_03
-  m_Shader: {fileID: 4800000, guid: 00e49d5099b8f6b4fb11bfeaaac272d3, type: 3}
+  m_Name: Myshader_U_rim
+  m_Shader: {fileID: 4800000, guid: 3507b5a1083395443ba9fc8a079e9ae2, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -25,7 +25,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _outlineWidth: 0.04
+    - _shadowRange: 0.5
+    - _shadowSmooth: 0.002
+    - _smoothness: 20
     m_Colors:
-    - _outlineCol: {r: 0, g: 0, b: 0, a: 1}
+    - _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    - _shadowCol: {r: 0.7, g: 0.7, b: 0.8, a: 1}
   m_BuildTextureStacks: []

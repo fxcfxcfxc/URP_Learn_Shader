@@ -1,4 +1,4 @@
-                                     Shader"Myshader/U_character01"
+Shader"Myshader/U_addrim"
 {
     Properties
     {  
@@ -7,7 +7,9 @@
         _shadowCol("影子颜色",Color)=(0.7,0.7,0.8,1.0)
         _shadowRange("光影阈值",Range(0,1))=0.5
         _shadowSmooth("光影过度",Range(0,0.03))=0.002
-        _smoothness("高光范围",float)=20.0
+        
+        _rimMin("边缘光白色范围",float)=0.85
+        _rimMax("边缘光黑色范围",float)=0.95
         _MainTex("主要纹理颜色",2D)="white"{}
         
     }
@@ -35,14 +37,15 @@
          
             uniform float4 _mainColor;
             uniform float4 _shadowCol;
-            uniform float  _smoothness;
-            uniform float4 _specColor;
-            uniform float _ambStrength;
             uniform float _shadowRange;
             uniform float _shadowSmooth;
+            uniform float _rimMin;
+            uniform float _rimMax;
             
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
+            
+            
             struct Attributes
             {
                 float4 vertex : POSITION;
@@ -77,20 +80,29 @@
                 float3 lightCol = light.color;//获取光源对象颜色
                 float3 lDir = normalize(light.direction);//获取光方向
                 float3 nDir = normalize(i.nDirWS);//一定要归一化法线
-
+                float3 vDir = SafeNormalize(GetCameraPositionWS()-i.posWS);
+                float3 hDir = SafeNormalize(vDir+lDir);
                 //float3 specularCol = pow(ndoth,_smoothness)* lightCol * _SpecColor;//高光
+                
+                //rimlight
+                float baseRimLight = 1.0-saturate(dot(vDir,nDir));//边缘光
+                float rimlight = smoothstep(_rimMin,_rimMax,baseRimLight);
+                
+                //lambert
+                float half_lambert = max(0.0,dot(nDir,lDir))*0.5 +0.5;//lambert
 
-                float  half_lambert = max(0.0,dot(nDir,lDir))*0.5 +0.5;//lambert
+                //ramp
                 float ramp = smoothstep(0, _shadowSmooth,half_lambert -_shadowRange);
                 float3 diffuse = lerp(_shadowCol, _mainColor, ramp);
+                
                 //float3 diffuse = half_lambert > _shadowRange ? _mainColor : _shadowCol;
                 //float3  ambColor = UNITY_LIGHTMODEL_AMBIENT.rgb * _ambStrength;//abmient
 
                 float3 MainTexCol = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv0);
                
-                return float4(diffuse * MainTexCol,1.0);
+                return float4(MainTexCol * (diffuse + rimlight ) ,1.0);
             }
             ENDHLSL
-        }
+        }                                                                                                          
     }
 }

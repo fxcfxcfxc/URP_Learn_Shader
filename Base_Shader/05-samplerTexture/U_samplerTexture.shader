@@ -59,7 +59,7 @@ Shader"Myshader/U_samplerTexture"
             {
                 v2f o;
                 o.posCS  = TransformObjectToHClip(v.vertex.xyz);
-                o.posWS  = TransformObjectToWorld(v.vertex.xyz);//URP下的函数从模型空间转换到裁切空间
+                o.posWS  = TransformObjectToWorld(v.vertex.xyz);//URP下的函数从模型空间转换到世界空间
                 o.nDirWS = TransformObjectToWorldNormal(v.normal.xyz);//URP下的函把法线型空间转换到世界
                 o.uv0 = v.uv;                      
                 return o;

@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Myshader_RenderFuture_outline_03
-  m_Shader: {fileID: 4800000, guid: 00e49d5099b8f6b4fb11bfeaaac272d3, type: 3}
+  m_Name: Myshader_KYK_Specular
+  m_Shader: {fileID: 4800000, guid: 517ee0b082996d146b495becb9b93fd2, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -19,13 +19,18 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
+    - _BaseTex:
+        m_Texture: {fileID: 2800000, guid: c1c03cc502eeea446a40ad91432984f9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ILMTex:
+        m_Texture: {fileID: 2800000, guid: ea2b34dc3cff6064aaedae622b84d655, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _outlineWidth: 0.04
+    - _OutlineWidth: 0.04
+    - _specularSmooth: 0.83
     m_Colors:
-    - _outlineCol: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineCol: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

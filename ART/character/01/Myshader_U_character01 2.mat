@@ -25,7 +25,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _shadowRange: 0.513
+    - _shadowRange: 0.55
+    - _shadowSmooth: 0
     - _smoothness: 20
     m_Colors:
     - _mainColor: {r: 1, g: 1, b: 1, a: 1}
