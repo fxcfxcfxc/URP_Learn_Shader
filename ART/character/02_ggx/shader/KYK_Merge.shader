@@ -108,7 +108,7 @@ Shader"Myshader/KYK_Merge"
                 float baseRim = 1.0-dot(nDirWS,vDirWS);
                 float modifyRim = smoothstep(_RimMin,_RimMax,baseRim);
                 float4 baseTexCol = SAMPLE_TEXTURE2D(_BaseTex,sampler_BaseTex,i.uv0);  
-                float3 finalRimColor = lerp(0,baseTexCol.rgb,max(0,modifyRim));
+                float3 finalRimColor = lerp(0,baseTexCol.rgb,max(0,modifyRim)) * baseTexCol.a;
                 
                 
                 //-------------------------------------高光--------------------------
@@ -138,7 +138,6 @@ Shader"Myshader/KYK_Merge"
                 
                 //------------------------------- 颜色合并------------------------------
                 float3 mainColor = lerp(baseTexCol.rgb + finalSpec,sssTexCol * 0.65,mainShadow) + finalRimColor;
-                
                 float3 mainColorLine = mainColor * inLine * detailTexCol;
                 //-------------------------------------颜色输出-----------------------
                 float3  baseColor = mainColorLine;

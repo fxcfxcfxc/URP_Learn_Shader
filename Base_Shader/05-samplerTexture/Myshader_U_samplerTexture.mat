@@ -20,13 +20,13 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: b8f6952db92d21e4f9eb504aeeb8ada6, type: 3}
+        m_Texture: {fileID: 2800000, guid: d6f5c398f6f4fa9448a32087bfcba7fe, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _ambStrength: 1
-    - _smoothness: 20
+    - _smoothness: 244.3
     m_Colors:
     - _MainColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}

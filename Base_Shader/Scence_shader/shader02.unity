@@ -668,7 +668,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 92096377}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.667, y: 3.421, z: -44.098}
+  m_LocalPosition: {x: 4.48, y: 3.421, z: -44.098}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -729,7 +729,7 @@ PrefabInstance:
     - target: {fileID: -2653839129327113217, guid: 1ecf15930f7af3a4c8405bfe8b03ebb2, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 2780f8ea1e9edfd4eaac9e467079c1e1, type: 2}
+      objectReference: {fileID: 2100000, guid: 9a8c2aa02eea55a408ab8a358d17ffc5, type: 2}
     - target: {fileID: -1503110495045240411, guid: 1ecf15930f7af3a4c8405bfe8b03ebb2, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -8085,6 +8085,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boost: 3.5
   positionLerpTime: 0.2
+  mouseSensitivity: 60
   mouseSensitivityCurve:
     serializedVersion: 2
     m_Curve:
@@ -9909,7 +9910,7 @@ PrefabInstance:
     - target: {fileID: -2653839129327113217, guid: 72d110c4b044f2d4cb1e2fa5bd67c986, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 2780f8ea1e9edfd4eaac9e467079c1e1, type: 2}
+      objectReference: {fileID: 2100000, guid: 9a8c2aa02eea55a408ab8a358d17ffc5, type: 2}
     - target: {fileID: -1503110495045240411, guid: 72d110c4b044f2d4cb1e2fa5bd67c986, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
