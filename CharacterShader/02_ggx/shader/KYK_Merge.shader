@@ -13,6 +13,9 @@ Shader"Myshader/KYK_Merge"
        _SpecuPower("高光颜色强度",float) = 10 
        _OutlineWidth("描边宽度",float)=0.04
        _shadowthreshold("阴影阈值",float)=1
+       [Space(30)]
+       [Toggle(DebugMode)] _DebugMode("DebugMode?", Float) = 0
+       [KeywordEnum(None,specShape)]_TestMode("Debug",Int) = 0
     }
     SubShader
     {
@@ -34,6 +37,7 @@ Shader"Myshader/KYK_Merge"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma shader_feature DebugMode
             #pragma multi_compile_fog
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -47,6 +51,7 @@ Shader"Myshader/KYK_Merge"
             uniform float  _RimMin;
             uniform float  _RimMax;
             uniform float _SpecuPower;
+            uniform int   _TestMode;
             CBUFFER_END
             TEXTURE2D(_BaseTex);
             SAMPLER(sampler_BaseTex);
@@ -109,7 +114,7 @@ Shader"Myshader/KYK_Merge"
                 float modifyRim = smoothstep(_RimMin,_RimMax,baseRim);
                 float4 baseTexCol = SAMPLE_TEXTURE2D(_BaseTex,sampler_BaseTex,i.uv0);  
                 float3 finalRimColor = lerp(0,baseTexCol.rgb,max(0,modifyRim)) * baseTexCol.a;
-                
+
                 
                 //-------------------------------------高光--------------------------
                 float3 hDirWS = SafeNormalize(lDir + vDirWS);
@@ -140,6 +145,15 @@ Shader"Myshader/KYK_Merge"
                 float3 mainColor = lerp(baseTexCol.rgb + finalSpec,sssTexCol * 0.65,mainShadow) + finalRimColor;
                 float3 mainColorLine = mainColor * inLine * detailTexCol;
                 //-------------------------------------颜色输出-----------------------
+                #ifdef DebugMode
+                    if(_TestMode == 0)
+                     {
+                        return  float4(specMask,specMask,specMask,1.0);
+                     }
+                
+                #endif
+                 
+                 
                 float3  baseColor = mainColorLine;
                 return float4(baseColor,1.0);
             }
