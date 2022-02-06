@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Myshader_isotropy
-  m_Shader: {fileID: 4800000, guid: 3caa0403493d862458e3bf7085ee6fb0, type: 3}
+  m_Name: M_sol_outline
+  m_Shader: {fileID: 4800000, guid: c0d310af992229a4c861a62d9e1fb5c9, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -20,6 +20,9 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
-    m_Floats: []
-    m_Colors: []
+    m_Floats:
+    - _outlineWidth: 0.04
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _outlineCol: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

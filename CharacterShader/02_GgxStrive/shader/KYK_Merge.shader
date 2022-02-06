@@ -1,4 +1,4 @@
-Shader"Myshader/KYK_Specular"
+Shader"Myshader/KYK_Merge"
 {
     Properties
     {   
@@ -6,13 +6,15 @@ Shader"Myshader/KYK_Specular"
        _SssTex("阴影面颜色",2D)="white"{}
        _ILMTex("R:高光区域强度——G:固有阴影区域——B:高光形状——A:内描边（贴图要取消SRGB勾选导入）",2D)="white"{}
        _detailTex("细节纹理",2D)="white"{}
-       _decalTex("贴花",2D)="white"{}
        _OutlineCol("描边颜色",color)=(1.0,0.0,0.0,1.0)
        _RimMin("边缘光Min",float) = 0.7
        _RimMax("边缘光max",float) = 0.72
        _SpecuPower("高光颜色强度",float) = 10 
        _OutlineWidth("描边宽度",float)=0.04
        _shadowthreshold("阴影阈值",float)=1
+       [Space(30)]
+       [Toggle(DebugMode)] _DebugMode("DebugMode?", Float) = 0
+       [KeywordEnum(None,finalRimColor,finalSpec,mainShadow)]_TestMode("Debug",Int) = 0
     }
     SubShader
     {
@@ -25,7 +27,7 @@ Shader"Myshader/KYK_Specular"
         Pass
         {
         
-            Name "U_Specular"
+            Name "U_basecolor"
             Tags
             {
               "LightMode" = "UniversalForward"
@@ -34,6 +36,7 @@ Shader"Myshader/KYK_Specular"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma shader_feature DebugMode //宏定义
             #pragma multi_compile_fog
             
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -47,6 +50,7 @@ Shader"Myshader/KYK_Specular"
             uniform float  _RimMin;
             uniform float  _RimMax;
             uniform float _SpecuPower;
+            int   _TestMode;
             CBUFFER_END
             TEXTURE2D(_BaseTex);
             SAMPLER(sampler_BaseTex);
@@ -59,10 +63,7 @@ Shader"Myshader/KYK_Specular"
             
             TEXTURE2D(_detailTex);
             SAMPLER(sampler_detailTex);
-            
-            TEXTURE2D(_decalTex);
-            SAMPLER(sampler_decalTex);
-            
+
             
 
             struct Attributes
@@ -108,8 +109,8 @@ Shader"Myshader/KYK_Specular"
                 float baseRim = 1.0-dot(nDirWS,vDirWS);
                 float modifyRim = smoothstep(_RimMin,_RimMax,baseRim);
                 float4 baseTexCol = SAMPLE_TEXTURE2D(_BaseTex,sampler_BaseTex,i.uv0);  
-                float3 finalRimColor = lerp(0,baseTexCol.rgb,max(0,modifyRim));
-                
+                float3 finalRimColor = lerp(0,baseTexCol.rgb,max(0,modifyRim)) * baseTexCol.a;
+
                 
                 //-------------------------------------高光--------------------------
                 float3 hDirWS = SafeNormalize(lDir + vDirWS);
@@ -132,16 +133,35 @@ Shader"Myshader/KYK_Specular"
                 float inLine = iLMTexCol.a;
                 //------------------------------------detail-------------------------------
                 float detailTexCol = SAMPLE_TEXTURE2D(_detailTex,sampler_detailTex,i.uv1);
-                
-                //-----------------------------------贴花---------------------------------
-                float3 decalTexCol = SAMPLE_TEXTURE2D(_decalTex,sampler_decalTex,i.uv0);
-                
+                               
                 //------------------------------- 颜色合并------------------------------
-                float3 mainColor = lerp(baseTexCol.rgb + finalSpec,sssTexCol * 0.65,mainShadow) + finalRimColor;
-                
+                float3 mainColor = lerp(baseTexCol.rgb + finalSpec,sssTexCol * 0.5,mainShadow) + finalRimColor;
                 float3 mainColorLine = mainColor * inLine * detailTexCol;
                 //-------------------------------------颜色输出-----------------------
-                float3  baseColor = finalSpec;
+                
+                #ifdef DebugMode
+                    if(_TestMode == 1)
+                     {
+                        return  float4(finalRimColor,1.0);
+                     }
+                     
+                    if(_TestMode == 2)
+                    {
+                       return  float4(finalSpec,1.0);
+                    }
+                    
+                    if(_TestMode == 3)
+                    {
+                    
+                      return   float4(1-mainShadow,1-mainShadow,1-mainShadow,1.0);
+                    }
+                     
+                     
+                
+                #endif
+                 
+                 
+                float3  baseColor = mainColorLine;
                 return float4(baseColor,1.0);
             }
             

@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Myshader_KYK_Shadow Head
-  m_Shader: {fileID: 4800000, guid: 28b1cd067638bc84db8231e54dff79de, type: 3}
-  m_ShaderKeywords: 
+  m_Name: M_Sol_shadow
+  m_Shader: {fileID: 4800000, guid: f901092a5264126409477c91907b012e, type: 3}
+  m_ShaderKeywords: DebugMode
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -32,24 +32,22 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _decalTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: fbf07eb1db1441e4482d2bd44ff3f518, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _detailTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 5f827197a1e6898439c6a0c3cbf821af, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _DebugMode: 1
     - _OutlineWidth: 0.04
     - _RimMax: 0.72
     - _RimMin: 0.7
-    - _SpecuPower: 10
-    - _mainShadowThreshold: 0.13
-    - _permanentShadowThreshold: 0.4
-    - _secondShadowThreshold: 0.4
-    - _secondShadowThresholdS2: 0.01
-    - _shadowthreshold: -0.33
+    - _SpecuPower: 5.08
+    - _TestMode: 3
+    - _shadowthreshold: 1
     m_Colors:
     - _OutlineCol: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
