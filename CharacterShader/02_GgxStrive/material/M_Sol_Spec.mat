@@ -46,7 +46,7 @@ Material:
     - _RimMax: 0.72
     - _RimMin: 0.7
     - _SpecuPower: 8.3
-    - _TestMode: 2
+    - _TestMode: 4
     - _shadowthreshold: 1
     m_Colors:
     - _OutlineCol: {r: 0, g: 0, b: 0, a: 1}

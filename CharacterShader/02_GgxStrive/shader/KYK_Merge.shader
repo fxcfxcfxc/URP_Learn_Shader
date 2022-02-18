@@ -14,7 +14,7 @@ Shader"Myshader/KYK_Merge"
        _shadowthreshold("阴影阈值",float)=1
        [Space(30)]
        [Toggle(DebugMode)] _DebugMode("DebugMode?", Float) = 0
-       [KeywordEnum(None,finalRimColor,finalSpec,mainShadow)]_TestMode("Debug",Int) = 0
+       [KeywordEnum(None,finalRimColor,finalSpec,mainShadow,specShape)]_TestMode("Debug",Int) = 0
     }
     SubShader
     {
@@ -154,6 +154,12 @@ Shader"Myshader/KYK_Merge"
                     {
                     
                       return   float4(1-mainShadow,1-mainShadow,1-mainShadow,1.0);
+                    }
+
+                    if(_TestMode == 4)
+                    {
+                    
+                      return   float4(specShape,specShape,specShape,1.0);
                     }
                      
                      
