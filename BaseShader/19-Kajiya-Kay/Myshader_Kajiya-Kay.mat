@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Myshader_Kajiya-Kay
+  m_Shader: {fileID: 4800000, guid: e95db7d11ce230e41a0fdd73dd87c79f, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MaskTexture:
+        m_Texture: {fileID: 2800000, guid: 4a253793e448aa54cb769f2e035042c3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _diffuseTexture:
+        m_Texture: {fileID: 2800000, guid: 3caa2ac9724fd124aa85438b092ecc69, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _offsetTexture:
+        m_Texture: {fileID: 2800000, guid: 2bfbf2bf86e343f478771b1c75a1db73, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Shift1: -0.761
+    - _Shift2: 0
+    - _TangentValue: 1.8
+    - _specularStrength: 285
+    - _specularStrength2: 100
+    m_Colors:
+    - _MainColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ShadowColor: {r: 0.4410822, g: 0.47773072, b: 0.5943396, a: 1}
+    - _specularColor: {r: 0.9245283, g: 0.65769273, b: 0.26747355, a: 1}
+    - _specularColor2: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
