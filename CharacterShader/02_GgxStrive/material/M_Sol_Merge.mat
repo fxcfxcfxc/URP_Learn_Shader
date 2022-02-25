@@ -42,7 +42,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _DebugMode: 0
-    - _OutlineWidth: 0.04
+    - _OutlineWidth: 0.3
     - _RimMax: 0.72
     - _RimMin: 0.7
     - _SpecuPower: 11.88

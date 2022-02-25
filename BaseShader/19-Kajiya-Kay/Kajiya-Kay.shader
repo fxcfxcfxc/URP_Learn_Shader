@@ -6,6 +6,8 @@ Shader"Myshader/Kajiya-Kay"
         _diffuseTexture("基础颜色贴图",2d)="black"{}
         _MaskTexture("遮罩数据贴图 R:空 G：AO B：高光范围遮罩",2d)="white"{}
         _offsetTexture("偏移贴图",2d)="white"{}
+        
+        [Space(10)][Header(__________________AdjustBaseColor)]
         _MainColor("基础颜色混合",Color)=(1.0,1.0,1.0,1.0)
         _ShadowColor("暗部颜色",Color)=(0.5, 0.5, 0.5, 1.0) 
         
@@ -22,7 +24,7 @@ Shader"Myshader/Kajiya-Kay"
         
         
         [Space(10)][Header(__________________Outline)]
-        _OutlineCol("描边颜色",color)=(1.0,0.0,0.0,1.0)
+        _OutlineCol("描边颜色",Color)=(1.0,0.0,0.0,1.0)
         _OutlineWidth("描边宽度",float)=0.04
         
     }
@@ -57,7 +59,7 @@ Shader"Myshader/Kajiya-Kay"
         ENDHLSL
         
         
-        //-----------------------------------PASS0------------------
+        //-----------------------------------PASS0/Kajita_Kay------------------
         Pass
         {
         
@@ -212,19 +214,19 @@ Shader"Myshader/Kajiya-Kay"
             ENDHLSL
         }
         
-        //-----------------------------------PASS1--------------------
+        //-----------------------------------PASS1/描边--------------------
         Pass
         {
             Name "Outline"
             Tags
             {
-                "LightMode" = "SRPDefaultUnlit"
+                "LightMode"  = "SRPDefaultUnlit"
                 
             }
             cull front
             
             HLSLPROGRAM
-            #pragma Vertex vert_outline
+            #pragma vertex vert_outline
             #pragma fragment frag_outline
 
             //------变量声明
@@ -261,7 +263,7 @@ Shader"Myshader/Kajiya-Kay"
                 nDirNDC.x *= aspect;
                 
                 //顶点扩张
-                o.posCS.xy = o.posCS.xy + nDirNDC.xy * _OutlineWidth*0.1;
+                o.posCS.xy = o.posCS.xy + nDirNDC.xy * _OutlineWidth*0.01;
                 o.uv0 = v.uv;
                 return o;
             }
