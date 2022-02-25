@@ -178,7 +178,7 @@ Shader"Myshader/KYK_Merge"
         {
             //通过添加lightmode为SRPDEFAULTUNLIT 实现多pass
         
-            Name "outline"![](C:/Users/ADMINI~1/AppData/Local/Temp/31e9ae6e86128e719451ff8f57fa22ff.jpg)
+            Name "outline"
             Tags
             {
               "LightMode"  = "SRPDefaultUnlit"

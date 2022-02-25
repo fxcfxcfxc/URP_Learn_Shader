@@ -34,15 +34,17 @@ Material:
     m_Ints: []
     m_Floats:
     - _OutlineWidth: 0.4
+    - _RimPower: 1.87
     - _Shift1: -0.761
     - _Shift2: 0
     - _TangentValue: 1.8
     - _specularStrength: 285
     - _specularStrength2: 100
     m_Colors:
-    - _MainColor: {r: 1, g: 1, b: 1, a: 1}
+    - _MainColor: {r: 1, g: 0.9931936, b: 0.9308176, a: 1}
     - _OutlineCol: {r: 0, g: 0, b: 0, a: 1}
-    - _ShadowColor: {r: 0.4410822, g: 0.47773072, b: 0.5943396, a: 1}
+    - _RimColor: {r: 0.588882, g: 1, b: 0.06289297, a: 1}
+    - _ShadowColor: {r: 0.39907438, g: 0.43373972, b: 0.5377358, a: 1}
     - _specularColor: {r: 0.9245283, g: 0.65769273, b: 0.26747355, a: 1}
     - _specularColor2: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

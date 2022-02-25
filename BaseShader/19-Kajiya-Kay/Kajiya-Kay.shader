@@ -22,6 +22,9 @@ Shader"Myshader/Kajiya-Kay"
         _specularStrength2("第二层高光范围",Range(0,500))=100
         _Shift2("第二层高光位置偏移",Range(-1,1))=0.0
         
+        [Space(10)][Header(___________________RimLight)]
+        _RimColor("RGB:边缘光颜色 aphla：强度",Color)=(1.0, 0.0, 0.0, 0.0)
+        _RimPower("边缘光强度",float)=0.5
         
         [Space(10)][Header(__________________Outline)]
         _OutlineCol("描边颜色",Color)=(1.0,0.0,0.0,1.0)
@@ -83,10 +86,12 @@ Shader"Myshader/Kajiya-Kay"
             uniform float  _specularStrength2;
             uniform float4 _specularColor2;
             uniform float  _Shift1;
-            uniform float3 _MainColor;
-            uniform float3 _ShadowColor;
+            uniform float4 _MainColor;
+            uniform float4 _ShadowColor;
             uniform float  _OutlineWidth;
-            uniform float3 _OutlineCol;
+            uniform float4 _OutlineCol;
+            uniform float4  _RimColor;
+            uniform float  _RimPower;
             
             CBUFFER_END
 
@@ -124,9 +129,9 @@ Shader"Myshader/Kajiya-Kay"
             // funcion： 获取头发高光
             float3 StrandSpecular(float3 T,float3 V,float3 L,float exponent)
             {
-                float3 H = normalize(L+V);
-                float dotTH = dot(T,H);
-                float sinTH = sqrt(1-dotTH * dotTH);
+                float3 H = normalize(L+V);//半角向量h
+                float dotTH = dot(T,H);//副切线 和H dot
+                float sinTH = sqrt(1-dotTH * dotTH);//sqrt平方根
                 float dirAtten = smoothstep(-1, 0, dotTH);
                 return dirAtten * pow(sinTH,exponent) * _TangentValue;
                 
@@ -161,12 +166,13 @@ Shader"Myshader/Kajiya-Kay"
             //------------------------------片段着色器--------------
             half4 frag (v2f i) : SV_Target
             {
-                //准备基本数据
+                //////准备基本数据
                 Light light = GetMainLight();
                 
                 float3 lDirWS = normalize(light.direction);
                 float3 lightCol = light.color;
                 float3 nDirWS = normalize(i.nDirWS);
+                //构建新的T,B
                 float3 posWS = float3(i.TtoW0.w,i.TtoW1.w,i.TtoW2.w);
                 float3 tDirWS = normalize(float3(i.TtoW0.x,i.TtoW1.x,i.TtoW2.x));
                 float3 bDirWS = normalize(float3(i.TtoW0.y,i.TtoW1.y,i.TtoW2.y));
@@ -174,15 +180,16 @@ Shader"Myshader/Kajiya-Kay"
                 float3 hDirWS = SafeNormalize(vDirWS + lDirWS);//半角方向
 
                 float nDotl = saturate(dot(nDirWS,lDirWS));
+                float nDotv = saturate(dot(nDirWS,vDirWS));
 
-                //准备纹理数据
+                //////准备纹理数据
                 float3 diffuseTexColor  = SAMPLE_TEXTURE2D(_diffuseTexture,sampler_diffuseTexture,i.uv0);
                 float3 offsetTexColor   = SAMPLE_TEXTURE2D(_offsetTexture,sampler_offsetTexture,i.uv0);
-                float3 _MaskTexColor    = SAMPLE_TEXTURE2D(_MaskTexture,sampler_MaskTexture,i.uv0);
+                float3 MaskTexColor    = SAMPLE_TEXTURE2D(_MaskTexture,sampler_MaskTexture,i.uv0);
 
                 //-------------------------------------明暗漫反射
                 //明暗
-                float aoMask = _MaskTexColor.g;
+                float aoMask = MaskTexColor.g;
                 float shadow = lerp(-0.8,1,nDotl * aoMask * 2);//?
                 float shadowMod = pow(saturate(shadow),0.25);
                 
@@ -190,7 +197,7 @@ Shader"Myshader/Kajiya-Kay"
                 float3 diffuse = lerp(_ShadowColor,diffuseTexColor * _MainColor,shadowMod);
 
                 //--------------------------------------边缘光
-
+                float rim = _RimColor.rgb * _RimColor.a * pow(1-nDotv,_RimPower);
                 
                 //--------------------------------------高光
                 //切线偏移方向强度
@@ -201,12 +208,12 @@ Shader"Myshader/Kajiya-Kay"
                 float3 spec1 = StrandSpecular(t1,vDirWS,lDirWS,_specularStrength) *_specularColor;
 
                 //高光遮罩范围限制
-                float specularMask = _MaskTexColor.b;
+                float specularMask = MaskTexColor.b;
                 float3 spec1Mod = spec1 * nDotl * specularMask;
 
                 //-------------------------------------输出
                 //合并颜色
-                float3 merge = diffuse +  spec1Mod;
+                float3 merge = diffuse +  spec1Mod + rim;
                 float3 pixelColor = merge;
                 return float4(pixelColor,1);
             }
