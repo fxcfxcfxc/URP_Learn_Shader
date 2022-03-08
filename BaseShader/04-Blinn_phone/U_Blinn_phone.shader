@@ -3,10 +3,10 @@ Shader"Myshader/samplerTexture"
     Properties
     {  
     
-        _MainColor("ÑÕÉ«",Color)=(1.0,1.0,1.0,1.0)
-        _smoothness("¸ß¹â·¶Î§",float)=20.0
-        _SpecColor("¸ß¹âÑÕÉ«",Color)=(1.0,1.0,1.0,1.0)
-        _ambStrength("»·¾³¹â",range(0,1))=1.0
+        _MainColor("ï¿½ï¿½É«",Color)=(1.0,1.0,1.0,1.0)
+        _smoothness("ï¿½ß¹â·¶Î§",float)=20.0
+        _SpecColor("ï¿½ß¹ï¿½ï¿½ï¿½É«",Color)=(1.0,1.0,1.0,1.0)
+        _ambStrength("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",range(0,1))=1.0
         
     }
     SubShader
@@ -56,8 +56,8 @@ Shader"Myshader/samplerTexture"
             {
                 v2f o;
                 o.posCS  = TransformObjectToHClip(v.vertex.xyz);
-                o.posWS  = TransformObjectToWorld(v.vertex.xyz);//URPÏÂµÄº¯Êý´ÓÄ£ÐÍ¿Õ¼ä×ª»»µ½²ÃÇÐ¿Õ¼ä
-                o.nDirWS = TransformObjectToWorldNormal(v.normal.xyz);//URPÏÂµÄº¯°Ñ·¨ÏßÐÍ¿Õ¼ä×ª»»µ½ÊÀ½ç
+                o.posWS  = TransformObjectToWorld(v.vertex.xyz);//URPï¿½ÂµÄºï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½Í¿Õ¼ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿Õ¼ï¿½
+                o.nDirWS = TransformObjectToWorldNormal(v.normal.xyz);//URPï¿½ÂµÄºï¿½ï¿½Ñ·ï¿½ï¿½ï¿½ï¿½Í¿Õ¼ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 o.uv0 = v.uv;                      
                 return o;
             }
@@ -65,24 +65,24 @@ Shader"Myshader/samplerTexture"
             float4 frag (v2f i) : SV_Target
             {      
                 
-                Light light = GetMainLight();//»ñÈ¡µ½µÆ¹â¶ÔÏó
-                float3 lightCol = light.color;//»ñÈ¡¹âÔ´¶ÔÏóÑÕÉ«
-                float3 lDir = normalize(light.direction);//»ñÈ¡¹â·½Ïò
-                float3 nDir = normalize(i.nDirWS);//Ò»¶¨Òª¹éÒ»»¯·¨Ïß
+                Light light = GetMainLight();//ï¿½ï¿½È¡ï¿½ï¿½ï¿½Æ¹ï¿½ï¿½ï¿½ï¿½
+                float3 lightCol = light.color;//ï¿½ï¿½È¡ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
+                float3 lDir = normalize(light.direction);//ï¿½ï¿½È¡ï¿½â·½ï¿½ï¿½
+                float3 nDir = normalize(i.nDirWS);//Ò»ï¿½ï¿½Òªï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-                float3 vDir = SafeNormalize(GetCameraPositionWS()-i.posWS);//ÊÓ½Ç·½Ïòsafe ·½Î»·ÖÄ¸Îª0
-                float3 hDir = SafeNormalize(vDir +lDir);//°ë½Ç·½Ïò
+                float3 vDir = SafeNormalize(GetCameraPositionWS()-i.posWS);//ï¿½Ó½Ç·ï¿½ï¿½ï¿½safe ï¿½ï¿½Î»ï¿½ï¿½Ä¸Îª0
+                float3 hDir = SafeNormalize(vDir +lDir);//ï¿½ï¿½Ç·ï¿½ï¿½ï¿½
                 float3 ndoth = saturate(dot(hDir,nDir));
 
 
-                float3 specularCol = pow(ndoth,_smoothness)* lightCol * _SpecColor;//¸ß¹â
+                float3 specularCol = pow(ndoth,_smoothness)* lightCol * _SpecColor;//ï¿½ß¹ï¿½
 
                 float  lambert = max(0.0,dot(nDir,lDir));//lambert
                 float3  ambColor = UNITY_LIGHTMODEL_AMBIENT.rgb * _ambStrength;//abmient
                 
                 float3 finalColor = lambert * _MainColor + specularCol+ambColor;
 
-                return float4(finalColor,1.0);
+                return float4(finalColor,1);
             }
             ENDHLSL
         }

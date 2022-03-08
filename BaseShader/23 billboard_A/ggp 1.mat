@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ggp 1
+  m_Shader: {fileID: 4800000, guid: 743e73dc5640394478286fce4e1bbec7, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BackgroundTexture:
+        m_Texture: {fileID: 2800000, guid: be1eac9cfb74b384ca713e9d249c7c00, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortionTexture:
+        m_Texture: {fileID: 2800000, guid: 7df0da7a823e0bd4c91ea6cb4e5680b7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LedGlowTexture:
+        m_Texture: {fileID: 2800000, guid: 7b0ab8c67896246478d79a95accdcb12, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LedTexture:
+        m_Texture: {fileID: 2800000, guid: 3f10cbf75664e414094f16658196179b, type: 3}
+        m_Scale: {x: 10, y: 10}
+        m_Offset: {x: 0, y: 0}
+    - _LogoTexture:
+        m_Texture: {fileID: 2800000, guid: ba2c12b9033ced943886fe2b7315967e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ShadowTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _diffuseTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BackgroundStrength: 0.104
+    - _DistortionSpeed: 1
+    - _DistortionStrength: 1
+    - _LogoSpeed: 0.78
+    - _OutlineWidth: 0.04
+    - _ledTexStrength: 1
+    m_Colors:
+    - _LedColorG: {r: 1, g: 0.1764706, b: 0, a: 1}
+    - _LedColorR: {r: 0.36862746, g: 0, b: 0.27570036, a: 1}
+    - _MainColor: {r: 1, g: 1, b: 1, a: 1}
+    - _OutlineCol: {r: 1, g: 0, b: 0, a: 1}
+    - _ShadowColor: {r: 0.29999998, g: 0.29999998, b: 0.29999998, a: 1}
+  m_BuildTextureStacks: []

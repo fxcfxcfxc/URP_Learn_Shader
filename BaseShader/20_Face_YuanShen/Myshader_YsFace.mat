@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Myshader_YsFace
+  m_Shader: {fileID: 4800000, guid: 8356a9f67c4e35e44abd7f69909bc61a, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _ShadowTexture:
+        m_Texture: {fileID: 2800000, guid: 0b5704a5a403dc849910774b6a57d8a6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _diffuseTexture:
+        m_Texture: {fileID: 2800000, guid: ab5a096f0e5584c41b213f126cd81972, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _OutlineWidth: 0.53
+    m_Colors:
+    - _OutlineCol: {r: 0.5660378, g: 0.505518, b: 0.505518, a: 1}
+    - _ShadowColor: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 1}
+  m_BuildTextureStacks: []
