@@ -1,8 +1,9 @@
 Shader"Myshader/holographic"
 {
     Properties
-    {  
-        _MaskTexture("数据图RGBA",2d)="gray"{}
+    {   
+        _DiffTexture("固有色贴图",2d)="white"{}
+        _MaskTexture("数据图RGBA",2d)="white"{}
         [HDR]_MainColor("主要颜色",Color)=(1.0, 1.0, 1.0, 1.0)
         _Speed("速度",float)=1.0
         [HDR]_EdgeColor("边缘颜色",Color)=(1.0,1.0,1.0,1.0)
@@ -80,6 +81,9 @@ Shader"Myshader/holographic"
             TEXTURE2D(_MaskTexture);
             SAMPLER(sampler_MaskTexture);
 
+            TEXTURE2D(_DiffTexture);
+            SAMPLER(sampler_DiffTexture);
+
             /*
             封装函数实例
             // funcion：按照法线方向 偏移 Tangent 方向
@@ -155,8 +159,10 @@ Shader"Myshader/holographic"
                 float2 maskTexUv = i.screenUV + float2(0,0.25) * aniSpeed;
                 float  maskTexColR = SAMPLE_TEXTURE2D(_MaskTexture, sampler_MaskTexture, maskTexUv).r;
                 float  maskTexColG = SAMPLE_TEXTURE2D(_MaskTexture, sampler_MaskTexture, i.uv0).g;
+
+                float3 diffTexCol = SAMPLE_TEXTURE2D(_DiffTexture,sampler_DiffTexture,i.uv0).rgb;
                 float3 edgeCol = vDotn * _EdgeColor * maskTexColR * maskTexColG;
-                float3 mainCol = (_MainColor + edgeCol) * maskTexColR * maskTexColG *_OpacityStrength;
+                float3 mainCol = (_MainColor * diffTexCol + edgeCol) * maskTexColR * maskTexColG *_OpacityStrength;
                 
                 float  pixelAphla = maskTexColG * maskTexColR * _OpacityStrength;
                 float3 pixelRGB = mainCol;

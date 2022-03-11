@@ -1,9 +1,9 @@
-Shader"Myshader/matcap"
+Shader"Myshader/Dissolve"
 {
     Properties
     {   
        _BaseColor("Base Color",Color)=(1,1,1,1)
-       _matcapTex("matcap贴图",2D)="white"{}
+       _matcapTex("CubMap贴图",2D)="white"{}
        _smoothPow("菲尼尔强度",float)=1.0
     }
     SubShader
