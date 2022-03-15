@@ -29,9 +29,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _ClipThreshold: 0.683
+    - _ClipThreshold: 0.724
     - _DissolveStep: 0.5
-    - _EdgeWidth: 0.07
+    - _EdgeWidth: 0.05
     m_Colors:
     - _EdgeColor: {r: 0, g: 2.297397, b: 2.189284, a: 1}
   m_BuildTextureStacks: []

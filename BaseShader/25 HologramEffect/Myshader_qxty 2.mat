@@ -33,7 +33,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _OpacityStrength: 0.139
+    - _OpacityStrength: 0.194
     - _Speed: 1.21
     m_Colors:
     - _EdgeColor: {r: 0, g: 11.181761, b: 7.02519, a: 1}
