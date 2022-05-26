@@ -102,8 +102,13 @@
             v2f vert_outline (Attributes v)
             {
                 v2f o;
-                o.posCS = TransformObjectToHClip(v.vertex.xyz);
+                //==========================物体空间的法线外扩==================================
+                //v.vertex.xyz = v.vertex.xyz  + _outlineWidth * v.normal;
+                //o.posCS = TransformObjectToHClip(v.vertex.xyz);//转化到裁剪空间
                 
+                //====================================观察空间法线外扩========================
+                
+                //====================================裁剪空间发现外扩=====================
                 //为了使相机无论远近，都是拥有相对的描边宽度
                 float3 nDirWS = TransformObjectToWorldNormal(v.normal);//模型法线->世界空间
                 //float3 nDirVS = TransformWorldToViewDir(nDirWS);//世界空间法线->观察空间，URP函数可以直接从世界到齐次裁剪空间
