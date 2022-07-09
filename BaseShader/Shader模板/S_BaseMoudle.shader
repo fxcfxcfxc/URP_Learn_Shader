@@ -1,9 +1,10 @@
-Shader"Myshader/Frame"
+Shader"Myshader/BaseMoudle"
 {
     Properties
     {  
         _DiffTexture("DiffTexture",2D)="black"{}
-        
+        _testrange("testrange",Range(0,10))=1
+        _normalMap("normalMap",2D)="bump"{}
     }
     SubShader
     {   
@@ -25,7 +26,7 @@ Shader"Myshader/Frame"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
-        //----模型数据————》顶点着色器
+        //----Verteices数据out ————》顶点着色器in
         struct Attributes
         {
                 float4 vertex : POSITION;
@@ -43,10 +44,10 @@ Shader"Myshader/Frame"
         //=============================================PASS 0===========================
         Pass
         {
-            //-----------------name
+            //-----------------pass name
             Name "flowmap"
             
-            //------------------tags
+            //------------------pass tags
             Tags
             {
                 //渲染路径
@@ -65,7 +66,7 @@ Shader"Myshader/Frame"
 
             //---------------------设置SRP Batch ,变量声明
             CBUFFER_START(UnityPerMaterial)
-
+            uniform float _testrange;
  
             CBUFFER_END
 
@@ -73,8 +74,12 @@ Shader"Myshader/Frame"
             TEXTURE2D(_DiffTexture);
             SAMPLER(sampler_DiffTexture);
 
-            
+            TEXTURE2D(_normalMap);
+            SAMPLER(sampler_normalMap);
 
+
+            
+            //------------------------自定义封装函数
             /*
             封装函数格式参考
             // funcion：按照法线方向 偏移 Tangent 方向
@@ -85,7 +90,7 @@ Shader"Myshader/Frame"
             }
             */
 
-            //-------------------------------顶点着色器——》片段着色器
+            //-------------------------------顶点着色器out ——》片段着色器in
             struct v2f
             {
                 float4 posCS : SV_POSITION;
@@ -94,6 +99,7 @@ Shader"Myshader/Frame"
                 float2 uv1 : TEXCOORD1;
                 float3 nDirWS:TEXCOORD2;
                 float3 tDirWS:TEXCOORD3;
+                float  clipZ : TEXCOORD4;
                 float4 color: COLOR;
        
             };
@@ -104,9 +110,9 @@ Shader"Myshader/Frame"
                 
                 v2f o;
 
-                //MVP  对象空间-》世界空间-》观察空间-》 裁剪空间  【-w,w】
+                //MVP  对象空间-》世界空间-》观察空间-》 裁剪空间  posCS 的范围【-w,w】
                 o.posCS = TransformObjectToHClip(v.vertex.xyz);
-
+                o.clipZ = o.posCS.w;
                 
                 o.posWS = TransformObjectToWorld(v.vertex.xyz);
                 o.nDirWS = TransformObjectToWorldNormal(v.normal.xyz);
@@ -119,10 +125,10 @@ Shader"Myshader/Frame"
                 return o;
             }
 
-            //-----------------------------------------------片段着色器
+            //------------------------------------------片段着色器
             half4 frag (v2f i) : SV_Target
             {
-                //-------------------------------------------准备基本数据
+                //-------------------------------------------------准备基本数据
                 Light light = GetMainLight();
 
                 //主方向灯光 世界方向
@@ -131,11 +137,17 @@ Shader"Myshader/Frame"
                 //主方向灯光 颜色
                 float3 lightCol = light.color;
 
-                //片元 世界位置
+                //ambient color
+                float3 ambient = UNITY_LIGHTMODEL_AMBIENT.rgb;
+
+                //片元位置 世界空间
                 float3 posWS = i.posWS;
 
-                //片元 屏幕位置
+                //片元 屏幕位置（unity帮我们处理了 裁剪空间下的坐标，经过透视除法，NDC，屏幕坐标映射，所以这里直接是屏幕坐标）,Z值为【0，1】
                 float3 posCS = i.posCS;
+        
+                //片元z深度  clip空间
+                float clipZ = i.clipZ;
 
                 //片元 顶点色
                 float4 vertexColor = i.color;
@@ -168,13 +180,13 @@ Shader"Myshader/Frame"
                 
                 //hlsl常规纹理采样格式   参数为：纹理，  采样器， 坐标
                 float3 textureColor = SAMPLE_TEXTURE2D(_DiffTexture,sampler_DiffTexture,uv0);
-                
-                
-                //-----------------------------------------------------
 
+                //法线贴图(得到贴图中存储的切线空间下的法线信息)
+                float3 nDirTS = UnpackNormal( SAMPLE_TEXTURE2D(_normalMap,sampler_normalMap,i.uv0) );
                 
-
                 
+                //----------------------------------------------------计算
+           
  
                 float3 fragementOutColor = 1;    
                 return float4(fragementOutColor,1);
