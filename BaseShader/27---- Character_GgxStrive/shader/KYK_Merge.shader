@@ -102,7 +102,7 @@ Shader"Myshader/KYK_Merge"
             half4 frag (v2f i) : SV_Target
             {
                 //------------------------------------边缘光-------------------------
-                Light light = GetMainLight();//获取相机对象
+                Light light = GetMainLight();//获取对象
                 float3 lDir = normalize(light.direction);
                 float3 nDirWS = normalize(i.nDirWS); 
                 float3 vDirWS = SafeNormalize(GetCameraPositionWS()-i.posWS);
