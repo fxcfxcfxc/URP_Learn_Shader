@@ -1,4 +1,4 @@
-Shader"Myshader/BaseMoudle"
+Shader"Myshader/OpaqueTexture"
 {
     Properties
     {  
@@ -15,6 +15,7 @@ Shader"Myshader/BaseMoudle"
             
            "RenderType"="Opaque"
            "RenderPipeline"="UniversalPipeline"
+            
         
         }
         LOD 100
@@ -77,6 +78,9 @@ Shader"Myshader/BaseMoudle"
             TEXTURE2D(_normalMap);
             SAMPLER(sampler_normalMap);
 
+
+            TEXTURE2D(_CameraOpaqueTexture);
+            SAMPLER(sampler_CameraOpaqueTexture);
 
             
             //------------------------自定义封装函数
@@ -144,7 +148,7 @@ Shader"Myshader/BaseMoudle"
                 float3 posWS = i.posWS;
 
                 //片元 屏幕空间UV（unity帮我们处理了 裁剪空间下的坐标，经过透视除法，NDC，屏幕坐标映射，所以这里直接是屏幕位置）,Z值为【0，1】
-                float2 posCS = i.posCS.xy / _ScreenParams.xy;
+                float2 posScreen = i.posCS.xy / _ScreenParams.xy;
         
                 //片元z深度  clip空间
                 float clipZ = i.clipZ;
@@ -184,12 +188,12 @@ Shader"Myshader/BaseMoudle"
                 //法线贴图(得到贴图中存储的切线空间下的法线信息)
                 float3 nDirTS = UnpackNormal( SAMPLE_TEXTURE2D(_normalMap,sampler_normalMap,i.uv0) );
                 
-                
+                float3 OpaqueValue = SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,posScreen +textureColor.xy * _testrange).rgb;
                 //----------------------------------------------------计算
+            
            
- 
-                float3 fragementOutColor = 1;    
-                return float4(fragementOutColor,1);
+                float3 fragementOutColor = OpaqueValue;    
+                return float4(OpaqueValue,1);
             }
                 
             ENDHLSL

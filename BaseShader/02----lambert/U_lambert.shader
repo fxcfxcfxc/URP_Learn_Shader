@@ -3,7 +3,7 @@ Shader"Myshader/U_lambert"
     Properties
     {  
     
-        _MainColor("ÑÕÉ«",Color)=(1.0,1.0,1.0,1.0)
+        _MainColor("ï¿½ï¿½É«",Color)=(1.0,1.0,1.0,1.0)
     }
     SubShader
     {   
@@ -46,16 +46,16 @@ Shader"Myshader/U_lambert"
             v2f vert (Attributes v)
             {
                 v2f o;
-                o.posCS = TransformObjectToHClip(v.vertex.xyz);//URPÏÂµÄº¯Êý´ÓÄ£ÐÍ¿Õ¼ä×ª»»µ½²ÃÇÐ¿Õ¼ä
-                o.nDirWS = TransformObjectToWorldNormal(v.normal.xyz);//URPÏÂµÄº¯°Ñ·¨ÏßÐÍ¿Õ¼ä×ª»»µ½ÊÀ½ç
+                o.posCS = TransformObjectToHClip(v.vertex.xyz);//URPï¿½ÂµÄºï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½Í¿Õ¼ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿Õ¼ï¿½
+                o.nDirWS = TransformObjectToWorldNormal(v.normal.xyz);//URPï¿½ÂµÄºï¿½ï¿½Ñ·ï¿½ï¿½ï¿½ï¿½Í¿Õ¼ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 o.uv0 = v.uv;                      
                 return o;
             }
 
             half4 frag (v2f i) : SV_Target
             {   
-                Light light = GetMainLight();//»ñÈ¡¹âÔ´¶ÔÏóÒýÓÃ
-                float3 lDir = light.direction;//»ñÈ¡·½Ïò
+                Light light = GetMainLight();//ï¿½ï¿½È¡ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                float3 lDir = light.direction;//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
                 float3 nDir = i.nDirWS;
 
                 float  lambert = max(0.0,dot(nDir,lDir));
@@ -65,5 +65,7 @@ Shader"Myshader/U_lambert"
             }
             ENDHLSL
         }
+        
+    
     }
 }
