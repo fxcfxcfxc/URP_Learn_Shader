@@ -2,9 +2,11 @@ Shader"Myshader/MyWater"
 {
     Properties
     {  
-        _DiffTexture("DiffTexture",2D)="black"{}
-        _testrange("testrange",Range(0,10))=1
-        _normalMap("normalMap",2D)="bump"{}
+//        _DiffTexture("DiffTexture",2D)="black"{}
+          _testrange("testrange",Range(0,10))=1
+//        _normalMap("normalMap",2D)="bump"{}
+          _Acolor("Acolor",Color)=(0,0,0,1)
+          _Bcolor("bcolor",Color)=(1,1,1,1)
     }
     SubShader
     {   
@@ -67,15 +69,16 @@ Shader"Myshader/MyWater"
             //---------------------设置SRP Batch ,变量声明
             CBUFFER_START(UnityPerMaterial)
             uniform float _testrange;
+            float4 _Acolor,_Bcolor;
  
             CBUFFER_END
 
             //---------------------纹理声明
-            TEXTURE2D(_DiffTexture);
-            SAMPLER(sampler_DiffTexture);
-
-            TEXTURE2D(_normalMap);
-            SAMPLER(sampler_normalMap);
+            // TEXTURE2D(_DiffTexture);
+            // SAMPLER(sampler_DiffTexture);
+            //
+            // TEXTURE2D(_normalMap);
+            // SAMPLER(sampler_normalMap);
 
             TEXTURE2D(_CameraDepthTexture);
             SAMPLER(sampler_CameraDepthTexture);
@@ -186,16 +189,28 @@ Shader"Myshader/MyWater"
                 //---------------------------------------------------纹理数据采样
                 
                 //hlsl常规纹理采样格式   参数为：纹理，  采样器， 坐标
-                float3 textureColor = SAMPLE_TEXTURE2D(_DiffTexture,sampler_DiffTexture,uv0);
+                // float3 textureColor = SAMPLE_TEXTURE2D(_DiffTexture,sampler_DiffTexture,uv0);
 
                 //法线贴图(得到贴图中存储的切线空间下的法线信息)
-                float3 nDirTS = UnpackNormal( SAMPLE_TEXTURE2D(_normalMap,sampler_normalMap,i.uv0) );
-                
+                // float3 nDirTS = UnpackNormal( SAMPLE_TEXTURE2D(_normalMap,sampler_normalMap,i.uv0) );
+
+                //深度图
                 float depthvalue  = SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, posScreen).r;
-                //----------------------------------------------------计算
-           
                 
-                float3 fragementOutColor = depthvalue;    
+                
+                //----------------------------------------------------计算
+
+                
+                depthvalue = LinearEyeDepth(depthvalue,_ZBufferParams);
+                float waterplaneDepth = i.posCS.w;
+                float edgedepth = depthvalue -waterplaneDepth;
+
+
+                float3 waterColor = lerp(_Acolor,_Bcolor,edgedepth/3);
+
+
+                
+                float3 fragementOutColor = waterColor;    
                 return float4(fragementOutColor,1);
             }
                 
