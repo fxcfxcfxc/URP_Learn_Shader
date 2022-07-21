@@ -2,11 +2,22 @@ Shader"Myshader/MyWater"
 {
     Properties
     {  
-//        _DiffTexture("DiffTexture",2D)="black"{}
-          _testrange("testrange",Range(0,10))=1
-//        _normalMap("normalMap",2D)="bump"{}
-          _Acolor("Acolor",Color)=(0,0,0,1)
-          _Bcolor("bcolor",Color)=(1,1,1,1)
+//      _DiffTexture("DiffTexture",2D)="black"{}
+//      _testrange("testrange",Range(0,10))=1
+//      _normalMap("normalMap",2D)="bump"{}
+        _NoiseTexture("NoiseTexture",2D) ="Black"{} 
+        _Edgecolor("Edgecolor",Color)=(0,0,0,1)
+        _Maincolor("Maincolor",Color)=(1,1,1,1)
+        _depth("depth",float) = 5.0
+        _RefractionSpeed("RefractionSpeed",float) = 0.1  
+        _RefractionScale("RefractionScale",float) = 0.3
+        _reflactionUVDepthAmount("reflactionUVDepthAmount",float) = 5.0
+        _NoiseX("NoiseX",float)=0.3
+        _NoiseY("NoiseY",float)=0.3
+        _FoamSpeed("FoamSpeed",Range(0,0.5))=0.3
+        _FoamScale("FoamScale",float)=4
+        _FoamAmount("FoamAmount",float)=0.3
+        _FoamColor("FoamColor",Color)=(1,1,1,1)
     }
     SubShader
     {   
@@ -15,8 +26,9 @@ Shader"Myshader/MyWater"
         Tags
         {   
             
-           "RenderType"="Opaque"
+           "RenderType"="Transparent"
            "RenderPipeline"="UniversalPipeline"
+           "Queue" = "Transparent"
         
         }
         LOD 100
@@ -25,9 +37,7 @@ Shader"Myshader/MyWater"
         //=========================================多pass公用输入数据===================
         HLSLINCLUDE
         //-----------------------库
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
+    
         //----Verteices数据out ————》顶点着色器in
         struct Attributes
         {
@@ -57,19 +67,28 @@ Shader"Myshader/MyWater"
             }
             
             //---------------------
-            //cull off
-            //zwrite off
-  
+       
+            
+            cull off
+            zwrite off
+            Blend One OneMinusSrcAlpha
+           
             
             HLSLPROGRAM
+            #pragma target 3.5
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fog
 
             //---------------------设置SRP Batch ,变量声明
             CBUFFER_START(UnityPerMaterial)
-            uniform float _testrange;
-            float4 _Acolor,_Bcolor;
+            uniform float _depth ,_RefractionSpeed,_RefractionScale,_NoiseX ,_NoiseY ,_FoamSpeed, _FoamScale,_FoamAmount, _reflactionUVDepthAmount;
+            float4 _Edgecolor, _Maincolor, _FoamColor;
  
             CBUFFER_END
 
@@ -77,11 +96,11 @@ Shader"Myshader/MyWater"
             // TEXTURE2D(_DiffTexture);
             // SAMPLER(sampler_DiffTexture);
             //
-            // TEXTURE2D(_normalMap);
-            // SAMPLER(sampler_normalMap);
+            TEXTURE2D(_NoiseTexture);
+            SAMPLER(sampler_NoiseTexture);
 
-            TEXTURE2D(_CameraDepthTexture);
-            SAMPLER(sampler_CameraDepthTexture);
+            //TEXTURE2D(_CameraDepthTexture);
+            //SAMPLER(sampler_CameraDepthTexture);
             
             //------------------------自定义封装函数
             /*
@@ -94,10 +113,22 @@ Shader"Myshader/MyWater"
             }
             */
 
+            //-------------------------提取水面边缘
 
             
+            //-------------------------UV偏移
+            half2 UVMove(float2 uv, float Speed , float Scale)
+            {
+                half2 newUV =uv * Scale + (_Time.y * Speed).rr;
+                return newUV;
+            }
 
-
+            //-------------------------获取屏幕图像
+            float3 GetSceneColor(float3 WorldPos,float2 offsetUV)
+            {
+                float4 ScreenPostion = ComputeScreenPos(TransformWorldToHClip(WorldPos));
+                return SampleSceneColor( (ScreenPostion.xy + offsetUV) / ScreenPostion.w);
+            }
             
 
             //-------------------------------顶点着色器out ——》片段着色器in
@@ -119,10 +150,12 @@ Shader"Myshader/MyWater"
             {
                 
                 v2f o;
+                //float2 waterUV
 
                 //MVP  object world-》  world space-》 camera space-》clip space  posCS 的范围【-w,w】
                 o.posCS = TransformObjectToHClip(v.vertex.xyz);
                 o.clipZ = o.posCS.w;
+                    
                 
                 o.posWS = TransformObjectToWorld(v.vertex.xyz);
                 o.nDirWS = TransformObjectToWorldNormal(v.normal.xyz);
@@ -200,18 +233,39 @@ Shader"Myshader/MyWater"
                 
                 //----------------------------------------------------计算
 
-                
+
+                //------------------------------基本水面颜色区域
+                //获取到了相机空间下的z坐标值00
                 depthvalue = LinearEyeDepth(depthvalue,_ZBufferParams);
+                //获取水面深度    
                 float waterplaneDepth = i.posCS.w;
                 float edgedepth = depthvalue -waterplaneDepth;
+                float4 waterColor = lerp(_Edgecolor,_Maincolor,edgedepth/_depth);
 
-
-                float3 waterColor = lerp(_Acolor,_Bcolor,edgedepth/3);
-
+                //-----------------------------获取水底场景图像
+                float2 ReflactionUV = UVMove(uv0, _RefractionSpeed, _RefractionScale);
+                float ReflactionNoise = SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, ReflactionUV).r;
+                //根据深度来控制折射的一个强弱变化
+                float reflactionUVDepth = (depthvalue - waterplaneDepth)/_reflactionUVDepthAmount;
+                half3 SceneColor = GetSceneColor(posWS, float2(ReflactionNoise * _NoiseX, ReflactionNoise * _NoiseY) * reflactionUVDepth);
+                
+                
+                //----------------------------水花
+                float2 FilterMoveUV =  UVMove(uv0, _FoamSpeed, _FoamScale);
+                float FilterNoise = SAMPLE_TEXTURE2D(_NoiseTexture,sampler_NoiseTexture, FilterMoveUV).r;
+                float FilterSceneMoveDepth =  (depthvalue -waterplaneDepth)/_FoamAmount;
+                float waterfilter =step(FilterSceneMoveDepth,FilterNoise);
 
                 
-                float3 fragementOutColor = waterColor;    
-                return float4(fragementOutColor,1);
+                //----------------------------颜色混合
+                float4 lerpColor = lerp(waterColor, _FoamColor, waterfilter);   
+                lerpColor.rgb = lerp(SceneColor, lerpColor, lerpColor.a);
+                
+                
+                //----------------------------
+                float3 fragementOutColor = lerpColor.rgb;    
+                return float4(fragementOutColor,0.3);
+                
             }
                 
             ENDHLSL
