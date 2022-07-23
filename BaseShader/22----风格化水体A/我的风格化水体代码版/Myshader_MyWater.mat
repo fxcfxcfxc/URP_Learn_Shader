@@ -24,19 +24,26 @@ Material:
         m_Texture: {fileID: 2800000, guid: a4092162332b4ee4da8a02e67e8b9938, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _waterUpTexture:
+        m_Texture: {fileID: 2800000, guid: 7437b0d37fdaf844f957965bad4dcdc9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _FoamAmount: 1.06
+    - _FoamAmount: 1.09
     - _FoamScale: 1.82
     - _FoamSpeed: 0.038
-    - _NoiseX: 0.3
+    - _NoiseX: 0.33
     - _NoiseY: 0.3
-    - _RefractionScale: 0.3
-    - _RefractionSpeed: 0.02
-    - _depth: 5
+    - _RefractionScale: 0.6
+    - _RefractionSpeed: 0.03
+    - _WaterUpUvSize: 0.94
+    - _depth: 2.86
     - _reflactionUVDepthAmount: 0.55
+    - _waterSpeed: 0.17
+    - _waterUpStrength: 0.01
     m_Colors:
-    - _Edgecolor: {r: 0.30120435, g: 0.6435548, b: 0.6698113, a: 0.7764706}
-    - _FoamColor: {r: 0.7752759, g: 0.8773585, b: 0.8613758, a: 1}
-    - _Maincolor: {r: 0, g: 0.7735849, b: 0.14612152, a: 0.62352943}
+    - _Edgecolor: {r: 0.2988163, g: 0.7120355, b: 0.745283, a: 0.7764706}
+    - _FoamColor: {r: 0.7905393, g: 0.8962264, b: 0.87996686, a: 1}
+    - _Maincolor: {r: 0, g: 0.7735849, b: 0.14612144, a: 0.46666667}
   m_BuildTextureStacks: []

@@ -5,19 +5,32 @@ Shader"Myshader/MyWater"
 //      _DiffTexture("DiffTexture",2D)="black"{}
 //      _testrange("testrange",Range(0,10))=1
 //      _normalMap("normalMap",2D)="bump"{}
+        [Header(_________________________Texture)]
         _NoiseTexture("NoiseTexture",2D) ="Black"{} 
+        _waterUpTexture("waterUpTexture",2D)="Black"{}
+        
+        [Header(_________________________MainColor)]
         _Edgecolor("Edgecolor",Color)=(0,0,0,1)
         _Maincolor("Maincolor",Color)=(1,1,1,1)
         _depth("depth",float) = 5.0
+        
+        [Header(_________________________Refraction)]
         _RefractionSpeed("RefractionSpeed",float) = 0.1  
         _RefractionScale("RefractionScale",float) = 0.3
         _reflactionUVDepthAmount("reflactionUVDepthAmount",float) = 5.0
         _NoiseX("NoiseX",float)=0.3
         _NoiseY("NoiseY",float)=0.3
+        
+        [Header(__________________________Foam)]
         _FoamSpeed("FoamSpeed",Range(0,0.5))=0.3
         _FoamScale("FoamScale",float)=4
         _FoamAmount("FoamAmount",float)=0.3
         _FoamColor("FoamColor",Color)=(1,1,1,1)
+        
+        [Header(_________________________WaterUp)]
+        _WaterUpUvSize("WaterUpUvSize",Range(0,10))=1.0
+        _waterSpeed("waterSpeed",Range(0,5))=0.18
+        _waterUpStrength("waterUpStrength",Range(0,2))=0.1
     }
     SubShader
     {   
@@ -29,6 +42,8 @@ Shader"Myshader/MyWater"
            "RenderType"="Transparent"
            "RenderPipeline"="UniversalPipeline"
            "Queue" = "Transparent"
+            "IgnoreProjector" = "True"
+           
         
         }
         LOD 100
@@ -73,8 +88,9 @@ Shader"Myshader/MyWater"
             zwrite off
             Blend One OneMinusSrcAlpha
            
-            
+            //-----------
             HLSLPROGRAM
+            
             #pragma target 3.5
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -84,10 +100,14 @@ Shader"Myshader/MyWater"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fog
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            
 
             //---------------------设置SRP Batch ,变量声明
             CBUFFER_START(UnityPerMaterial)
             uniform float _depth ,_RefractionSpeed,_RefractionScale,_NoiseX ,_NoiseY ,_FoamSpeed, _FoamScale,_FoamAmount, _reflactionUVDepthAmount;
+            float _WaterUpUvSize, _waterSpeed ,_waterUpStrength;
             float4 _Edgecolor, _Maincolor, _FoamColor;
  
             CBUFFER_END
@@ -98,6 +118,9 @@ Shader"Myshader/MyWater"
             //
             TEXTURE2D(_NoiseTexture);
             SAMPLER(sampler_NoiseTexture);
+
+            TEXTURE2D(_waterUpTexture);
+            SAMPLER(sampler_waterUpTexture);
 
             //TEXTURE2D(_CameraDepthTexture);
             //SAMPLER(sampler_CameraDepthTexture);
@@ -150,14 +173,20 @@ Shader"Myshader/MyWater"
             {
                 
                 v2f o;
-                //float2 waterUV
+                
 
+                //-----------------------------------水面浮动
+                //计算 采样水面浮动噪波的 UV 
+                half2 waterUPUV = v.uv * _WaterUpUvSize + (_waterSpeed * _Time.y).rr;
+                float NoiseUV  = SAMPLE_TEXTURE2D_LOD(_waterUpTexture, sampler_waterUpTexture, waterUPUV ,1.0).r ;
+                v.vertex.y +=  NoiseUV * _waterUpStrength;
+                //End-------------------------------------------
+                
                 //MVP  object world-》  world space-》 camera space-》clip space  posCS 的范围【-w,w】
                 o.posCS = TransformObjectToHClip(v.vertex.xyz);
                 o.clipZ = o.posCS.w;
-                    
-                
                 o.posWS = TransformObjectToWorld(v.vertex.xyz);
+  
                 o.nDirWS = TransformObjectToWorldNormal(v.normal.xyz);
                 o.tDirWS= normalize( mul( unity_ObjectToWorld, float4(v.tangent.xyz,0.0) ) );
                      
