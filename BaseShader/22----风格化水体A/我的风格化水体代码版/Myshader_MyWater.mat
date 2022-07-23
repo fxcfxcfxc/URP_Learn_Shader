@@ -41,7 +41,7 @@ Material:
     - _depth: 2.86
     - _reflactionUVDepthAmount: 0.55
     - _waterSpeed: 0.17
-    - _waterUpStrength: 0.01
+    - _waterUpStrength: 0.006
     m_Colors:
     - _Edgecolor: {r: 0.2988163, g: 0.7120355, b: 0.745283, a: 0.7764706}
     - _FoamColor: {r: 0.7905393, g: 0.8962264, b: 0.87996686, a: 1}
