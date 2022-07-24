@@ -8,6 +8,7 @@ Shader"Myshader/MyWater"
         [Header(_________________________Texture)]
         _NoiseTexture("NoiseTexture",2D) ="Black"{} 
         _waterUpTexture("waterUpTexture",2D)="Black"{}
+        _caustTexture("caust",2D)= "Black"{}
         
         [Header(_________________________MainColor)]
         _Edgecolor("Edgecolor",Color)=(0,0,0,1)
@@ -31,6 +32,11 @@ Shader"Myshader/MyWater"
         _WaterUpUvSize("WaterUpUvSize",Range(0,10))=1.0
         _waterSpeed("waterSpeed",Range(0,5))=0.18
         _waterUpStrength("waterUpStrength",Range(0,2))=0.1
+        
+        [Header(_________________________Caustic)]
+        [HDR]_causticColor("_causticColor",Color)=(1, 1, 1, 1 )
+        _causticScale("causticScale",float)=1.0
+        _causticSpeed("causticSpeed",float)=0.1
     }
     SubShader
     {   
@@ -107,8 +113,8 @@ Shader"Myshader/MyWater"
             //---------------------设置SRP Batch ,变量声明
             CBUFFER_START(UnityPerMaterial)
             uniform float _depth ,_RefractionSpeed,_RefractionScale,_NoiseX ,_NoiseY ,_FoamSpeed, _FoamScale,_FoamAmount, _reflactionUVDepthAmount;
-            float _WaterUpUvSize, _waterSpeed ,_waterUpStrength;
-            float4 _Edgecolor, _Maincolor, _FoamColor;
+            float _WaterUpUvSize, _waterSpeed ,_waterUpStrength, _causticScale, _causticSpeed;
+            float4 _Edgecolor, _Maincolor, _FoamColor ,_causticColor;
  
             CBUFFER_END
 
@@ -121,6 +127,9 @@ Shader"Myshader/MyWater"
 
             TEXTURE2D(_waterUpTexture);
             SAMPLER(sampler_waterUpTexture);
+
+            TEXTURE2D(_caustTexture);
+            SAMPLER(sampler_caustTexture);
 
             //TEXTURE2D(_CameraDepthTexture);
             //SAMPLER(sampler_CameraDepthTexture);
@@ -271,6 +280,11 @@ Shader"Myshader/MyWater"
                 float edgedepth = depthvalue -waterplaneDepth;
                 float4 waterColor = lerp(_Edgecolor,_Maincolor,edgedepth/_depth);
 
+                //---------------------------------焦散效果
+                float2 causticUV = UVMove(uv0, _causticSpeed, _causticScale);
+                float caustic = SAMPLE_TEXTURE2D(_caustTexture, sampler_caustTexture,causticUV).r;
+                float4 causticMask = saturate (1.0- (depthvalue - waterplaneDepth)/2 ) * caustic * _causticColor;
+
                 //-----------------------------获取水底场景图像
                 float2 ReflactionUV = UVMove(uv0, _RefractionSpeed, _RefractionScale);
                 float ReflactionNoise = SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, ReflactionUV).r;
@@ -287,13 +301,14 @@ Shader"Myshader/MyWater"
 
                 
                 //----------------------------颜色混合
-                float4 lerpColor = lerp(waterColor, _FoamColor, waterfilter);   
+                float4 lerpColor = lerp(waterColor + causticMask, _FoamColor, waterfilter);
+                
                 lerpColor.rgb = lerp(SceneColor, lerpColor, lerpColor.a);
                 
                 
                 //----------------------------
                 float3 fragementOutColor = lerpColor.rgb;    
-                return float4(fragementOutColor,0.3);
+                return float4(fragementOutColor,1);
                 
             }
                 
