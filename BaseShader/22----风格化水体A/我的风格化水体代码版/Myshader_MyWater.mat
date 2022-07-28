@@ -36,21 +36,22 @@ Material:
     m_Floats:
     - _FoamAmount: 1.36
     - _FoamScale: 2.68
-    - _FoamSpeed: 0
+    - _FoamSpeed: 0.059
     - _NoiseX: 0.33
     - _NoiseY: 0.3
     - _RefractionScale: 0.6
     - _RefractionSpeed: 0.03
-    - _WaterUpUvSize: 0.94
+    - _WaterUpUvSize: 1.43
     - _causticScale: 1.92
     - _causticSpeed: 0.1
     - _depth: 2.96
     - _reflactionUVDepthAmount: 0.55
     - _waterSpeed: 0.14
-    - _waterUpStrength: 0.006
+    - _waterUpStrength: 0.173
     m_Colors:
     - _Edgecolor: {r: 0.2988163, g: 0.7120355, b: 0.745283, a: 0.7764706}
     - _FoamColor: {r: 0.7905393, g: 0.8962264, b: 0.87996686, a: 1}
     - _Maincolor: {r: 0, g: 0.77254903, b: 0.2321244, a: 0.46666667}
+    - _RippleColor: {r: 0.9528302, g: 0.9528302, b: 0.9528302, a: 1}
     - _causticColor: {r: 1.3803922, g: 3.4509804, b: 4, a: 1}
   m_BuildTextureStacks: []

@@ -14,6 +14,7 @@ Shader"Myshader/MyWater"
         _Edgecolor("Edgecolor",Color)=(0,0,0,1)
         _Maincolor("Maincolor",Color)=(1,1,1,1)
         _depth("depth",float) = 5.0
+        _RippleColor("RippleColor",color)=(1, 1, 1, 1)
         
         [Header(_________________________Refraction)]
         _RefractionSpeed("RefractionSpeed",float) = 0.1  
@@ -37,6 +38,7 @@ Shader"Myshader/MyWater"
         [HDR]_causticColor("_causticColor",Color)=(1, 1, 1, 1 )
         _causticScale("causticScale",float)=1.0
         _causticSpeed("causticSpeed",float)=0.1
+        
     }
     SubShader
     {   
@@ -114,8 +116,9 @@ Shader"Myshader/MyWater"
             CBUFFER_START(UnityPerMaterial)
             uniform float _depth ,_RefractionSpeed,_RefractionScale,_NoiseX ,_NoiseY ,_FoamSpeed, _FoamScale,_FoamAmount, _reflactionUVDepthAmount;
             float _WaterUpUvSize, _waterSpeed ,_waterUpStrength, _causticScale, _causticSpeed;
-            float4 _Edgecolor, _Maincolor, _FoamColor ,_causticColor;
- 
+            float4 _Edgecolor, _Maincolor, _FoamColor ,_causticColor , _RippleColor;
+            float3 _Position ;
+            float _OrthographicCamSize;
             CBUFFER_END
 
             //---------------------纹理声明
@@ -130,6 +133,9 @@ Shader"Myshader/MyWater"
 
             TEXTURE2D(_caustTexture);
             SAMPLER(sampler_caustTexture);
+
+            TEXTURE2D(_GlobalEffectRT);
+            SAMPLER(sampler_GlobalEffectRT);
 
             //TEXTURE2D(_CameraDepthTexture);
             //SAMPLER(sampler_CameraDepthTexture);
@@ -211,51 +217,35 @@ Shader"Myshader/MyWater"
             {
                 //-------------------------------------------------准备基本数据
                 Light light = GetMainLight();
-
                 //主方向灯光 世界方向
                 float3 lDirWS = normalize(light.direction);
-
                 //主方向灯光 颜色
                 float3 lightCol = light.color;
-
                 //ambient color
                 float3 ambient = UNITY_LIGHTMODEL_AMBIENT.rgb;
-
                 //片元位置 世界空间
                 float3 posWS = i.posWS;
-
                 //片元 屏幕空间UV（unity帮我们处理了 裁剪空间下的坐标，经过透视除法，NDC，屏幕坐标映射，所以这里直接是屏幕位置）,Z值为【0，1】
                 float2 posScreen = i.posCS.xy / _ScreenParams.xy;
-        
                 //片元z深度  clip空间
                 float clipZ = i.clipZ;
-
                 //片元 顶点色
                 float4 vertexColor = i.color;
-                
                 //片元 世界法线方向
                 float3 nDirWS =normalize( i.nDirWS );
-                
                 //片元切线方向 世界
                 float3 tDirWS = i.tDirWS;
-                
                 //片元副切线方向 世界
                 float3 biDirWS =normalize( cross(i.nDirWS,i.tDirWS) ) ;
-           
                 //UVO
                 float2 uv0 = i.uv0;
-                
                 //uv1
                 float2 uv1 = i.uv1;
-                
-                    
                 //视角相机方向 世界 
                 float3 vDirWS =SafeNormalize( GetCameraPositionWS() - i.posWS);
-                
                 //灯光反射向量 世界
                 float3 rDirWS = normalize( reflect(-lDirWS,nDirWS) );
                 
-
 
                 //---------------------------------------------------纹理数据采样
                 
@@ -271,6 +261,13 @@ Shader"Myshader/MyWater"
                 
                 //----------------------------------------------------计算
 
+                //投影的交互浪花区域
+                
+                float2 a =float2(posWS.x,posWS.z)- float2(_Position.x,_Position.z);
+                a= a/ (_OrthographicCamSize *2) + float2(0.5,0.5);
+                float textureColor = SAMPLE_TEXTURE2D(_GlobalEffectRT,sampler_GlobalEffectRT,a).z;
+                float Ripple = smoothstep(0.6,0.605,textureColor);
+                
 
                 //------------------------------基本水面颜色区域
                 //获取到了相机空间下的z坐标值00
@@ -304,7 +301,8 @@ Shader"Myshader/MyWater"
                 float4 lerpColor = lerp(waterColor + causticMask, _FoamColor, waterfilter);
                 
                 lerpColor.rgb = lerp(SceneColor, lerpColor, lerpColor.a);
-                
+
+                lerpColor.rgb = lerp(lerpColor.rgb,_RippleColor.rgb,Ripple);
                 
                 //----------------------------
                 float3 fragementOutColor = lerpColor.rgb;    
