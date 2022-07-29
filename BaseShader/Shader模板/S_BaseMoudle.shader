@@ -130,51 +130,34 @@ Shader"Myshader/BaseMoudle"
             {
                 //-------------------------------------------------准备基本数据
                 Light light = GetMainLight();
-
                 //主方向灯光 世界方向
                 float3 lDirWS = normalize(light.direction);
-
                 //主方向灯光 颜色
                 float3 lightCol = light.color;
-
                 //ambient color
                 float3 ambient = UNITY_LIGHTMODEL_AMBIENT.rgb;
-
                 //片元位置 世界空间
                 float3 posWS = i.posWS;
-
-                //片元 屏幕空间UV（unity帮我们处理了 裁剪空间下的坐标，经过透视除法，NDC，屏幕坐标映射，所以这里直接是屏幕位置）,Z值为【0，1】
+                //片元 屏幕空间UV（unity帮我们处理了 裁剪空间下的坐标，经过透视除法，NDC，屏幕坐标映射，所以这里直接是屏幕位置）
                 float2 posCS = i.posCS.xy / _ScreenParams.xy;
-        
-                //片元z深度  clip空间
+                //片元z深度  clip空间 【-w,w】
                 float clipZ = i.clipZ;
-
                 //片元 顶点色
                 float4 vertexColor = i.color;
-                
                 //片元 世界法线方向
                 float3 nDirWS =normalize( i.nDirWS );
-                
                 //片元切线方向 世界
                 float3 tDirWS = i.tDirWS;
-                
                 //片元副切线方向 世界
                 float3 biDirWS =normalize( cross(i.nDirWS,i.tDirWS) ) ;
-           
                 //UVO
                 float2 uv0 = i.uv0;
-                
                 //uv1
                 float2 uv1 = i.uv1;
-                
-                    
                 //视角相机方向 世界 
                 float3 vDirWS =SafeNormalize( GetCameraPositionWS() - i.posWS);
-                
                 //灯光反射向量 世界
                 float3 rDirWS = normalize( reflect(-lDirWS,nDirWS) );
-                
-
 
                 //---------------------------------------------------纹理数据采样
                 
