@@ -14,6 +14,8 @@ Shader"Myshader/simplerColor"
 
         Pass
         {
+        
+            cull off
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

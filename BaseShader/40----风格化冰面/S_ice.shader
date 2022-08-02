@@ -4,7 +4,7 @@ Shader"Myshader/M_ice"
     {  
         _DiffTexture("DiffTexture",2D)="black"{}
         //_testrange("testrange",Range(0,10))=1
-        //_normalMap("normalMap",2D)="bump"{}
+        _normalMap("normalMap",2D)="bump"{}
         
         
         _SpecularSmooth("_SpecularSmooth",float)=200
@@ -12,7 +12,7 @@ Shader"Myshader/M_ice"
         
         _Samples("_Samples",int)=8
         _LODNum("_LODNum",int)=1
-        _Offset("_Offset",Range(-0.3,0.3))=0.01
+        _Offset("_Offset",Range(-0.1,0.1))=0.01
         _lerp("lerp",Range(0, 1.0)) =0.8
         _ColorMul("_ColorMul",Range(0,10))=1.0
         
@@ -24,8 +24,9 @@ Shader"Myshader/M_ice"
         Tags
         {   
             
-           "RenderType"="Opaque"
+           "RenderType"="Transparent"
            "RenderPipeline"="UniversalPipeline"
+           "Queue"="Transparent"
         
         }
         LOD 100
@@ -67,9 +68,9 @@ Shader"Myshader/M_ice"
             
             
             //---------------------
-            //cull off
-            //zwrite off
-  
+            cull off
+            zwrite off
+            blend One OneMinusSrcAlpha
             
             HLSLPROGRAM
             #pragma vertex vert
@@ -178,8 +179,9 @@ Shader"Myshader/M_ice"
                 //float3 textureColor = SAMPLE_TEXTURE2D(_DiffTexture,sampler_DiffTexture,uv0);
 
                 //法线贴图(得到贴图中存储的切线空间下的法线信息)
-                //float3 nDirTS = UnpackNormal( SAMPLE_TEXTURE2D(_normalMap,sampler_normalMap,i.uv0) );
-                
+                float3 nDirTS = UnpackNormal( SAMPLE_TEXTURE2D(_normalMap,sampler_normalMap,uv0) );
+                float3x3 TBN = float3x3(tDirWS, biDirWS, nDirWS);
+                nDirWS = normalize( mul(nDirTS , TBN) );
                 
                 //----------------------------------------------------计算
 
@@ -205,7 +207,7 @@ Shader"Myshader/M_ice"
                 
                 float3 fragementOutColor = render.rgb  +  blinnPhone ;
                 fragementOutColor = lerp(SAMPLE_TEXTURE2D(_DiffTexture,sampler_DiffTexture,uv0) ,fragementOutColor,_lerp) * _ColorMul;
-                return float4(fragementOutColor,1);
+                return float4(fragementOutColor * vertexColor.r,vertexColor.r);
             }
                 
             ENDHLSL
