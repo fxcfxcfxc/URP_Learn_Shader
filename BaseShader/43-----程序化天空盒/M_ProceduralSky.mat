@@ -19,11 +19,48 @@ Material:
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs: []
+    m_TexEnvs:
+    - _BaseNoise:
+        m_Texture: {fileID: 2800000, guid: 544d5702cced3a04e8b3b1acb70b6b2c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Distort:
+        m_Texture: {fileID: 2800000, guid: 33058c22827b51a4bafb4d0d7736e517, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortScale:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SecNoise:
+        m_Texture: {fileID: 2800000, guid: 5f1273627f0b86648a1738ec29b253b3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Stars:
+        m_Texture: {fileID: 2800000, guid: ec144328b0a4e9e4d8a7eb951b670056, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _MoonOffset: 0.0349
-    - _MoonRadius: 0.1
-    - _SunRadius: 0.1
-    m_Colors: []
+    - _CloundCutoff: 0.73
+    - _DistortScale: 0.09
+    - _Distortion: 3.05
+    - _Fuzziness: 0.36
+    - _MoonOffset: 0.0167
+    - _MoonRadius: 0.04
+    - _Scale: 0.06
+    - _SecNoiseScale: 0.05
+    - _SunRadius: 0.04
+    - _scrollSpeed: 2.75
+    m_Colors:
+    - _CloudColorDayEdge: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
+    - _CloudColorDayMain: {r: 0.9496855, g: 1, b: 0.9931389, a: 1}
+    - _DayBottomColor: {r: 0.17974956, g: 0.59889024, b: 0.6886792, a: 1}
+    - _DayTopColor: {r: 0.33725488, g: 0.90729386, b: 1, a: 1}
+    - _HorizonColorDay: {r: 0.63919544, g: 0.764151, b: 0.740501, a: 1}
+    - _HorizonColorNight: {r: 0.2924528, g: 0.2047411, b: 0.1784146, a: 1}
+    - _MoonColor: {r: 1, g: 0.6283561, b: 0, a: 1}
+    - _NighBottomColor: {r: 0.053577766, g: 0.084081285, b: 0.1981132, a: 1}
+    - _NightTopColor: {r: 0.36417943, g: 0.22451636, b: 0.8301887, a: 1}
+    - _SunColor: {r: 1, g: 0.98914784, b: 0.9308176, a: 1}
   m_BuildTextureStacks: []
