@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Tools/ImageAddAlphaEdiror/Resource/imageAphlaStyle.uss?fileID=7433441132597879392&amp;guid=4f791ab389bb204478fd331cc52ff665&amp;type=3#imageAphlaStyle" />
+    <ui:Label tabindex="-1" text="Image Aphla Editor" display-tooltip-when-elided="true" name="title" style="-unity-text-align: upper-center; -unity-background-scale-mode: stretch-to-fill; -unity-background-image-tint-color: rgb(202, 102, 102); background-color: rgb(0, 0, 0); color: rgb(255, 254, 254);" />
+    <ui:DropdownField label="Dropdown" index="0" choices="Generate Texture,Load Texture" name="texture-option" />
+    <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); justify-content: flex-start; align-self: auto; flex-direction: column;">
+        <ui:IntegerField label="Weight" value="42" name="width-field" style="color: rgb(255, 255, 255);" />
+        <ui:IntegerField label="Height&#10;" value="42" name="height-field" style="justify-content: center; color: rgb(255, 255, 255);" />
+        <ui:Button text="Create Texture" display-tooltip-when-elided="true" name="create-tex-button" />
+    </ui:VisualElement>
+    <uie:ObjectField label="Object Field" name="texture-field" style="color: rgb(255, 255, 255);" />
+    <ui:DropdownField label="Alpha Option" index="0" choices="System.Collections.Generic.List`1[System.String]" name="alpha-dropdown" />
+    <ui:Slider picking-mode="Ignore" label="Alpha" value="255" high-value="255" name="alpha-silder" show-input-field="false">
+        <ui:IntegerField label="Int Field" value="42" name="alpha-input" />
+    </ui:Slider>
+    <uie:GradientField label="Gradient" name="GradientField" />
+    <ui:VisualElement name="preview-area" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 350px;">
+        <uie:ColorField label="Color" value="#61CCFFFF" name="tint" style="color: rgb(255, 255, 255);" />
+        <ui:VisualElement name="preview-pane" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: auto; background-image: url(&apos;project://database/Assets/Tools/ImageAddAlphaEdiror/Resource/Transparency500.png?fileID=2800000&amp;guid=6e7262e1a79ff31489bd008d38220908&amp;type=3#Transparency500&apos;); min-width: 320px; min-height: 330px; justify-content: center; align-items: center;">
+            <ui:VisualElement name="image-preview" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); position: relative; flex-shrink: 1; width: 310px; height: 310px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="VisualElement" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); flex-shrink: 0;">
+        <ui:Button text="Button" display-tooltip-when-elided="true" name="export-button" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -2,52 +2,9 @@ Shader"Myshader/BaseMoudle"
 {
     Properties
     {  
-
-
-        //_normalMap("normalMap",2D)="bump"{}
-        _MainNoisexture("_MainNoisexture",2D)="black"{}
-        _Noisexture("_Noisexture",2D)="black"{}
-        
-        [Header(__________________________________noise01)]
-  
-        _SpeedNoiseX("_SpeedNoiseX",float) =0.2
-        _SpeedNoiseY("_SpeedNoiseY",float) =0.2
-        _SpeedNoiseScale("_SpeedNoiseScale",float)=1.0
-        
-        
-        
-        [Header(__________________________________noise02)]
-        _MainScale("_MainScale",float) =1.0
-        _DistorStrength("_DistorStrength",float) =1.0
-        _SpeedMainX("_SpeedMainX",float) =1.0
-        _SpeedMainY("_SpeedMainY",float) =1.0
-        _VertexDistorStrength("_VertexDistorStrength",float) =0.5
-        
-        
-        [Header(__________________________________Color)]
-        _Color("Color",color) = (1,1,1,1)
-        _Color2("Color2",color) = (1,1,1,1)
-        _offset("_offset",Range(0,1)) = 1
-        _Strength("_Strength",float)= 1.0
-        
-        [Header(__________________________________Edge)]
-        _depthScale("_depthScale",float) = 200
-        _EdgeBlur("_EdgeBlur",Range(-1,1))= 0
-         _edgeColor("_edgeColor",color)= (1,1,1,1)
-        _edgeColorStrength("_edgeColorStrength",float)=1.0
-        
-         [Header(__________________________________Top)]
-        _Cutoff("_Cutoff",Range(0,1) )=0.5
-        _TopSmooth("_TopSmooth",Range(0,1))=0.1
-        _TopColor("_TopColor",color)=(1,1,1,1)
-        _TopColorStrength("_TopColorStrength",float)= 3
-        
-        [Header(__________________________________move)]
-        _Speed("_Speed",Range(0,1.0)) = 0.01
-        _Amount("_Amount",Range(0,1.0)) = 0.01
-        _Height("_Height",Range(0,1.0)) = 0.01
-        
-        
+        _DiffTexture("DiffTexture",2D)="black"{}
+        _testrange("testrange",Range(0,180))=1
+        _normalMap("normalMap",2D)="bump"{}
     }
     SubShader
     {   
@@ -69,6 +26,8 @@ Shader"Myshader/BaseMoudle"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
+     
+            #include "Assets/UnityShader_URP/Public/CustomHLSLFunction/CustomHlslFunction.hlsl"
         //----Verteices数据out ————》顶点着色器in
         struct Attributes
         {
@@ -98,7 +57,7 @@ Shader"Myshader/BaseMoudle"
             }
             
             //---------------------
-            //cull off
+            cull off
             //zwrite off
   
             
@@ -106,30 +65,21 @@ Shader"Myshader/BaseMoudle"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fog
-            #pragma target 3.5    
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
-            #include "Assets/UnityShader_URP/Public/CustomHLSLFunction/CustomHlslFunction.hlsl"
 
             //---------------------设置SRP Batch ,变量声明
             CBUFFER_START(UnityPerMaterial)
-            uniform float _testrange,_SpeedNoiseX,_SpeedNoiseY,_SpeedNoiseScale;
-            float _MainScale, _DistorStrength, _SpeedMainX,_SpeedMainY,_VertexDistorStrength;
-            float _offset,_Strength , _depthScale, _EdgeBlur, _edgeColorStrength;
-            float4 _Color, _Color2, _edgeColor, _TopColor;
-            float _Cutoff, _TopSmooth, _TopColorStrength, _Speed, _Amount, _Height;
+            uniform float _testrange;
  
             CBUFFER_END
 
             //---------------------纹理声明
-            TEXTURE2D(_Noisexture);
-            SAMPLER(sampler_Noisexture);
+            TEXTURE2D(_DiffTexture);
+            SAMPLER(sampler_DiffTexture);
 
-            // TEXTURE2D(_normalMap);
-            // SAMPLER(sampler_normalMap);
-            //
-            TEXTURE2D(_MainNoisexture);
-            SAMPLER(sampler_MainNoisexture);
+            TEXTURE2D(_normalMap);
+            SAMPLER(sampler_normalMap);
+
+
             
             //------------------------自定义封装函数
             /*
@@ -141,8 +91,6 @@ Shader"Myshader/BaseMoudle"
                 
             }
             */
-
-            
 
             //-------------------------------顶点着色器out ——》片段着色器in
             struct v2f
@@ -157,27 +105,29 @@ Shader"Myshader/BaseMoudle"
                 float4 color: COLOR;
        
             };
-
-
-
             
             //-----------------------------------------顶点着色器
             v2f vert (Attributes v)
             {
                 
                 v2f o;
-
-                //MVP  object world-》  world space-》 camera space-》clip space  posCS 的范围【-w,w】
-                v.vertex.y +=  (  sin(_Time.z * _Speed + (v.vertex.x * v.vertex.z * _Amount) ) * _Height ) * v.color.r;
-                o.posCS = TransformObjectToHClip(v.vertex.xyz);
-                o.clipZ = o.posCS.w; 
+                           
                 
                 o.posWS = TransformObjectToWorld(v.vertex.xyz);
+                float3 pos = TransformObjectToWorld(float3(0,0,0));
+                float3  a = RotateAboutAxis(float3(1,0 ,0 ), _Time.x * 10, pos,o.posWS);
+                a = TransformWorldToObject(o.posWS + a);
+                //MVP  object world-》  world space-》 camera space-》clip space  posCS 的范围【-w,w】
+                o.posCS = TransformObjectToHClip(a);
+                o.clipZ = o.posCS.w;
+                
+     
                 o.nDirWS = TransformObjectToWorldNormal(v.normal.xyz);
                 o.tDirWS= normalize( mul( unity_ObjectToWorld, float4(v.tangent.xyz,0.0) ) );
-                     
+                
                 o.color = v.color;
-                o.uv0 = v.uv;
+                o.uv0 = CustomRotator(v.uv,float2(0.5,0.5), _testrange);
+                
                 o.uv1 = v.uv1;
 
                 return o;
@@ -197,7 +147,7 @@ Shader"Myshader/BaseMoudle"
                 //片元位置 世界空间
                 float3 posWS = i.posWS;
                 //片元 屏幕空间UV（unity帮我们处理了 裁剪空间下的坐标，经过透视除法，NDC，屏幕坐标映射，所以这里直接是屏幕位置）
-                float2 posScreen = i.posCS.xy / _ScreenParams.xy;
+                float2 posCS = i.posCS.xy / _ScreenParams.xy;
                 //片元z深度  clip空间 【-w,w】
                 float clipZ = i.clipZ;
                 //片元 顶点色
@@ -220,47 +170,17 @@ Shader"Myshader/BaseMoudle"
                 //---------------------------------------------------纹理数据采样
                 
                 //hlsl常规纹理采样格式   参数为：纹理，  采样器， 坐标
-                //float3 textureColor = SAMPLE_TEXTURE2D(_DiffTexture,sampler_DiffTexture,uv0);
+                float3 textureColor = SAMPLE_TEXTURE2D(_DiffTexture,sampler_DiffTexture,uv0);
 
                 //法线贴图(得到贴图中存储的切线空间下的法线信息)
-                //float3 nDirTS = UnpackNormal( SAMPLE_TEXTURE2D(_normalMap,sampler_normalMap,i.uv0) );
+                float3 nDirTS = UnpackNormal( SAMPLE_TEXTURE2D(_normalMap,sampler_normalMap,i.uv0) );
                 
                 
                 //----------------------------------------------------计算
-                //-----------基础uv
-                float2 noiseUV = PannerUV(posWS.xz,_SpeedNoiseScale, _SpeedNoiseX, _SpeedNoiseY);
-                float2 noiseUV2 = PannerUV(posWS.xz,_SpeedNoiseScale * 0.5,_SpeedNoiseX, _SpeedNoiseY);
-                float noiseTexture = SAMPLE_TEXTURE2D(_Noisexture,sampler_Noisexture, noiseUV).r;
-                float noiseTexture2 = SAMPLE_TEXTURE2D(_Noisexture,sampler_Noisexture, noiseUV2).r;
-                float noisemove = saturate( (noiseTexture + noiseTexture2 ) *0.5 );
-
-                //----------基础流动和颜色    
-                float2 uvMain = posWS.xz * _MainScale;
-                uvMain += noisemove * _DistorStrength;
-                uvMain += float2(_Time.x * _SpeedMainX, _Time.x * _SpeedMainY) + (vertexColor.r * _VertexDistorStrength);
-                half4 col = SAMPLE_TEXTURE2D(_MainNoisexture,sampler_MainNoisexture, uvMain) * vertexColor.r;
-                col+= noisemove ;
-                float4 color = lerp(_Color , _Color2, col * _offset) * _Strength;
-
-                
-                //---------高亮边缘
-                float edgeline =  1- GetDepthEdge(posScreen, _depthScale,i.posCS.w);
-                float edge = smoothstep(1-col, (1-col) + _EdgeBlur, edgeline)  * vertexColor.r;
-
-                
-                //mask
-                color = color * (1-edge);
-                //加上颜色
-                color +=(edge * _edgeColor) * _edgeColorStrength;
-    
-                //---------主要高亮
-                float top = smoothstep(_Cutoff,_Cutoff+ _TopSmooth,col) * vertexColor.r;
-                color *= (1-top);
-                color += top * _TopColor * _TopColorStrength;
-                
-                float3 fragementOutColor = color.rgb ;    
+           
+ 
+                float3 fragementOutColor = textureColor;    
                 return float4(fragementOutColor,1);
-                
             }
                 
             ENDHLSL
